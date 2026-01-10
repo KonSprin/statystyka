@@ -267,35 +267,36 @@ print(model3.summary())
 # - Współczynnik dla 7.18 - Osoby z cukrzycą mają wyższe ciśnienie
 
 # %%
-# # Obliczenie średniej i odchylenia standardowego dla 'systolic'
-# mean_systolic = df['systolic'].mean()
-# std_systolic = df['systolic'].std()
+# Obliczenie średniej i odchylenia standardowego dla 'systolic'
+mean_systolic = df["systolic"].mean()
+std_systolic = df["systolic"].std()
 
-# # Obliczenie współczynnika zmienności
-# V_systolic = std_systolic / mean_systolic
+# Obliczenie współczynnika zmienności
+V_systolic = std_systolic / mean_systolic
 
-# print(f"Średnia ciśnienia skurczowego: {mean_systolic:.2f} mmHg")
-# print(f"Odchylenie standardowe: {std_systolic:.2f} mmHg")
-# print(f"Współczynnik zmienności (V): {V_systolic:.4f} (lub {V_systolic*100:.2f}%)")
+print(f"Średnia ciśnienia skurczowego: {mean_systolic:.2f} mmHg")
+print(f"Odchylenie standardowe: {std_systolic:.2f} mmHg")
+print(f"Współczynnik zmienności (V): {V_systolic:.4f} (lub {V_systolic*100:.2f}%)")
 
-# # Podział danych na palaczy i niepalących
-# smokers = df[df['smoker'] == 1]['systolic']
-# non_smokers = df[df['smoker'] == 0]['systolic']
-
-# # Obliczenie V dla obu grup
-# V_smokers = np.std(smokers) / np.mean(smokers)
-# V_non_smokers = np.std(non_smokers) / np.mean(non_smokers)
-
-# print(f"Współczynnik zmienności dla palaczy: {V_smokers:.4f} ({V_smokers*100:.2f}%)")
-# print(f"Współczynnik zmienności dla niepalących: {V_non_smokers:.4f} ({V_non_smokers*100:.2f}%)")
 
 # %%
+# Podział danych na palaczy i niepalących
+smokers = df[df["smoker"] == 1]["systolic"]
+non_smokers = df[df["smoker"] == 0]["systolic"]
 
+# Obliczenie V dla obu grup
+V_smokers = np.std(smokers) / np.mean(smokers)
+V_non_smokers = np.std(non_smokers) / np.mean(non_smokers)
+
+print(f"Współczynnik zmienności dla palaczy: {V_smokers:.4f} ({V_smokers*100:.2f}%)")
+print(
+    f"Współczynnik zmienności dla niepalących: {V_non_smokers:.4f} ({V_non_smokers*100:.2f}%)"
+)
 
 # %% [markdown]
 # ## Interpretacja współczynnika zmienności
 #
-#
+# Współczynnika zmienności wynoszący 0.1413 oznacza umiarkowane zróżnicoanie ciśnienia skurczowego w grupie badanej. W grupie palaczy widzimy większe zróżnicoanie niż w grupie niepalących.
 
 # %%
 residuals = model1.resid
