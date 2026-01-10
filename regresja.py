@@ -157,11 +157,13 @@ print(results)
 #
 # Adjusted R² = 0.0346: Wyjaśnia tylko ~3.5% zmienności.
 #
-# ## Model 3 (systolic ~ waist + fastfood + bmi):
+# ### Model 3 (systolic ~ waist + fastfood + bmi):
 #
 # Adjusted R² = 0.0567: Trochę lepsze dopasowanie niż Model 2 - ponad 5%.
 #
-#
+# ---
+# Wszystkie modele są raczej słabe (najlepszy wyjaśnia tylko 16%). Sugeruje to,
+# że inne czynniki (nie zawarte w danych) mają większy wpływ.
 
 # %%
 def plot_model_fit(model, title):
@@ -261,39 +263,39 @@ print(model3.summary())
 # ## Model 2
 #
 # - Wyraz wolny - 125.58 - przewidywane ciśnienie skurczowe dla osoby niepalącej bez cukrzycy
-# - Współczynnik dla palaczy - -3.92 - Osoby palące mają niższe ciśnienie o 3.92
+# - Współczynnik dla palaczy - -3.92 - Osoby palące mają niższe ciśnienie o 3.92 - jest to dość dziwny wynik, bo konwencjonalna wiedza sugerowałaby odwrotną zależność. Możliwe że inne zmienne tu grają rolę, lub jest mała próbka palaczy.
 # - Współczynnik dla 7.18 - Osoby z cukrzycą mają wyższe ciśnienie
 
 # %%
-# Obliczenie średniej i odchylenia standardowego dla 'systolic'
-mean_systolic = df["systolic"].mean()
-std_systolic = df["systolic"].std()
+# # Obliczenie średniej i odchylenia standardowego dla 'systolic'
+# mean_systolic = df['systolic'].mean()
+# std_systolic = df['systolic'].std()
 
-# Obliczenie współczynnika zmienności
-V_systolic = std_systolic / mean_systolic
+# # Obliczenie współczynnika zmienności
+# V_systolic = std_systolic / mean_systolic
 
-print(f"Średnia ciśnienia skurczowego: {mean_systolic:.2f} mmHg")
-print(f"Odchylenie standardowe: {std_systolic:.2f} mmHg")
-print(f"Współczynnik zmienności (V): {V_systolic:.4f} (lub {V_systolic*100:.2f}%)")
+# print(f"Średnia ciśnienia skurczowego: {mean_systolic:.2f} mmHg")
+# print(f"Odchylenie standardowe: {std_systolic:.2f} mmHg")
+# print(f"Współczynnik zmienności (V): {V_systolic:.4f} (lub {V_systolic*100:.2f}%)")
+
+# # Podział danych na palaczy i niepalących
+# smokers = df[df['smoker'] == 1]['systolic']
+# non_smokers = df[df['smoker'] == 0]['systolic']
+
+# # Obliczenie V dla obu grup
+# V_smokers = np.std(smokers) / np.mean(smokers)
+# V_non_smokers = np.std(non_smokers) / np.mean(non_smokers)
+
+# print(f"Współczynnik zmienności dla palaczy: {V_smokers:.4f} ({V_smokers*100:.2f}%)")
+# print(f"Współczynnik zmienności dla niepalących: {V_non_smokers:.4f} ({V_non_smokers*100:.2f}%)")
 
 # %%
-# Podział danych na palaczy i niepalących
-smokers = df[df["smoker"] == 1]["systolic"]
-non_smokers = df[df["smoker"] == 0]["systolic"]
 
-# Obliczenie V dla obu grup
-V_smokers = np.std(smokers) / np.mean(smokers)
-V_non_smokers = np.std(non_smokers) / np.mean(non_smokers)
-
-print(f"Współczynnik zmienności dla palaczy: {V_smokers:.4f} ({V_smokers*100:.2f}%)")
-print(
-    f"Współczynnik zmienności dla niepalących: {V_non_smokers:.4f} ({V_non_smokers*100:.2f}%)"
-)
 
 # %% [markdown]
 # ## Interpretacja współczynnika zmienności
 #
-# Współczynnika zmienności wynoszący 0.1413 oznacza umiarkowane zróżnicoanie ciśnienia skurczowego w grupie badanej. W grupie palaczy widzimy większe zróżnicoanie niż w grupie niepalących.
+#
 
 # %%
 residuals = model1.resid
@@ -315,7 +317,9 @@ print(f"Test Shapiro-Wilka: statystyka={shapiro_stat:.4f}, p-wartość={shapiro_
 # %% [markdown]
 # ## Normalność reszt
 #
-# Na wykresie kwantyl-kwantyl widać kilka odstających wartości w prawej górnej części. Poza tymi wartościami dane dobrze pasują do modelu. P-wartość testu Shapiro-Wilka jest bliska zeru co wskazuje na rozkład normalny reszt.
+# Na wykresie kwantyl-kwantyl widać kilka odstających wartości w prawej górnej części. Poza tymi wartościami dane dobrze pasują do modelu.
+#
+# P-wartość testu Shapiro-Wilka jest bliska zeru więc możemy odrzucić hipotezę zerową o normalności rozkładu - reszty nie mają normalnego rozkładu.
 
 # %%
 # Test na zerową wartość średniej reszt
@@ -374,3 +378,11 @@ plt.show()
 #
 # Test Durbina-Watsona daje nam wartość bliską 2, więc jest brak autokorelacji
 #
+
+# %% [markdown]
+# ## Ograniczenia analizy
+#
+# 1. **Niskie R²** - modele wyjaśniają max 16% zmienności
+# 2. **Brak normalności reszt** - narusza założenia MNK
+# 3. **Heteroskedastyczność** - wymaga robust standard errors
+# 5. **Małe próby** - tylko 1000 obserwacji
